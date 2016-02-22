@@ -1,7 +1,7 @@
 var list=[{
-	name:"OSRS Ironman",
-	finame:"OSRS Ironman",
-	desc:"2007scape Ironman Item list"
+	name:"OSRS Itemlist",
+	finame:"OSRS Itemlist",
+	desc:"2007scape Item list"
 },{
 	name:"/g/ Bingo",
 	finame:"gbingo",
