@@ -1,0 +1,13 @@
+Achiever
+========
+A Simple tool to fill out achievement images.
+
+How to Add A Image
+------------------
+Goto /generate.html
+Fill in the colomns
+Save your image in maps/name.ext
+Put the json at the bottom into maps/name.json
+and make a 128x128 thumb as maps/name.thumb.jpg
+add a entry to list.js
+submit a pr!

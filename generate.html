@@ -1,0 +1,92 @@
+<!DOCTYPE html><html>
+	<head>
+
+	</head>
+	<body>
+		File:<input type="file" id="file"/><button onclick="load();">Load</button><br>
+		Name:<input type="text" id="name" onchange="update();" value="Name"/><br>
+		Fill:<input type="text" id="fill" onchange="update();" value="rgba(0,255,0,.4)"/><br>
+		Stroke:<input type="text" id="stroke"  onchange="update();" value="rgba(0,255,0,1)"/><br>
+		<table id="table">
+			<tr><th>X</th><th>Y</th><th>Width</th><th>Height</th><th>Rows</th><th>Cols</th></tr>
+		</table>
+		<button onclick="addRow();">Add row</button><br>
+		Preview:<br>
+    <canvas id="canvas"></canvas><br>
+    <span class="name"></span>.thumb.jpg<br>
+    Make a 128x128
+    <span class="name"></span>.json<br>
+    <textarea id="json"></textarea>
+    <script src="canvas.js"></script>
+    <script>
+    	current={
+    		map:[],
+    	};
+    	var file=document.getElementById("file");
+    	var load = function(){
+    		var finame=file.files[0].name;
+    		current.ext=finame.substr(finame.lastIndexOf(".")+1);
+    		var fr = new FileReader();
+    		fr.onload=function(){
+    			img=new Image();
+    			img.onload=function(){
+    				canvas.width=img.width;
+						canvas.height=img.height;
+						sx=canvas.width/canvas.offsetWidth;
+						sy=canvas.height/canvas.offsetHeight;
+						makeSectors(true);
+    				addRow();
+    			};
+    			img.src=fr.result;
+    		};
+    		fr.readAsDataURL(file.files[0]);
+    	}
+    	file.onchange=load;
+    	function update(){
+    		current.name=document.getElementById("name").value;
+    		forEachClass("name",function(e){
+    			e.innerHTML=current.name;
+    		});
+    		current.finame=current.name.replace(/[^a-zA-Z]/g,"");
+    		ctx.strokeStyle=current.stroke=document.getElementById("stroke").value;
+    		ctx.fillStyle=current.fill=document.getElementById("fill").value;
+    		var tbod = document.getElementById("table").children[0];
+    		current.map=Array.prototype.map.call(tbod.children,function(e){
+    			return Array.prototype.map.call(e.children,function(i){
+    				console.log(i);
+    				if(i.tagName=="TD"){
+    					return parseInt(i.children[0].value);
+    				}
+    			});
+    		}).filter(function(v){
+    			return v&&v[0]!==undefined;
+    		});
+    		document.getElementById("json").value=JSON.stringify(current);
+    		makeSectors(true);
+    		reset();
+    	}
+    	function addRow(){
+    		var tr=document.createElement("tr");
+    		tr.innerHTML=[
+'<td><input type="text" class="tinp" onchange="update();" value="0"></td>',
+'<td><input type="text" class="tinp" onchange="update();" value="0"></td>',
+'<td><input type="text" class="tinp" onchange="update();" value="128"></td>',
+'<td><input type="text" class="tinp" onchange="update();" value="128"></td>',
+'<td><input type="text" class="tinp" onchange="update();" value="2"></td>',
+'<td><input type="text" class="tinp" onchange="update();" value="2"></td>',
+'<td><button onclick="remRow(this);">Remove Row</button></td>'
+    		].join("");
+    		document.getElementById("table").children[0].appendChild(tr);
+    		if(img)update();
+    	}
+    	function remRow(i){
+    		var tr=i.parentElement.parentElement;
+    		tr.parentElement.removeChild(tr);
+    		update();
+    	}
+    	function forEachClass(name,cb){
+    		return Array.prototype.forEach.call(document.getElementsByClassName(name),cb);
+    	}
+    </script>
+	</body>
+</html>
