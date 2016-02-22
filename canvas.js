@@ -38,8 +38,15 @@ canvas.addEventListener("click",function(e){
 	}
 });
 
-function reset(){
-	ctx.clearRect(0,0,ctx.width,ctx.height);
+function reset(fill){
+	if(fill){
+		var t = ctx.fillStyle;
+		ctx.fillStyle="#FFF";
+		ctx.fillRect(0,0,canvas.width,canvas.height);
+		ctx.fillStyle=t;
+	}else{
+		ctx.clearRect(0,0,canvas.width,canvas.height);
+	}
 	ctx.drawImage(img,0,-1);
 	sectors.forEach(function(v){
 		if(v.v){
@@ -120,7 +127,9 @@ function loadImage(name){
 
 function get(){
 	if(!current)return;
+	reset(true);
 	canvas.toBlob(function(blob){
 		saveAs(blob,current.finame+".jpg");
-	},"image/jpeg",.9);
+		reset();
+	},"image/jpeg",1);
 }

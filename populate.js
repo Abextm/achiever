@@ -5,7 +5,7 @@ c.innerHTML=list.map(function(type){
 	return [
 '<a href="#'+finame+'">',
 	'<div class="indexitem">',
-		'<img src="maps/'+finame+'.thumb.jpg">',
+		'<img src="maps/'+finame+'.thumb.png">',
 		'<p>',
 			type.desc,
 		'</p>',
