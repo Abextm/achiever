@@ -16,7 +16,18 @@ body {
   height: 60px;
   background-color: #f5f5f5;
 }
-
+#loading{
+  display: none;
+}
+#target{
+  display: none;
+}
+body.state-loaded #target{
+  display:block;
+}
+body.state-loading #loading{
+  display: block;
+}
 #indexcontainer{
   display: flex;
   flex-wrap: wrap;
@@ -37,4 +48,11 @@ body {
   display:block;
   margin:0 auto;
   cursor:pointer;
+}
+.youknowwho{
+  margin:0 auto;
+}
+#dlbutton{
+  margin:3px 0;
+  width:100%;
 }

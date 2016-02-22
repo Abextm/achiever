@@ -2,6 +2,29 @@ var current, img, sx,sy,sectors;
 var canvas=document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
 
+if (!Array.prototype.findIndex) {
+  Array.prototype.findIndex = function(predicate) {
+    if (this === null) {
+      throw new TypeError('Array.prototype.findIndex called on null or undefined');
+    }
+    if (typeof predicate !== 'function') {
+      throw new TypeError('predicate must be a function');
+    }
+    var list = Object(this);
+    var length = list.length >>> 0;
+    var thisArg = arguments[1];
+    var value;
+
+    for (var i = 0; i < length; i++) {
+      value = list[i];
+      if (predicate.call(thisArg, value, i, list)) {
+        return i;
+      }
+    }
+    return -1;
+  };
+}
+
 canvas.addEventListener("click",function(e){
 	if(!current)return;
 	var x = (e.pageX - canvas.offsetLeft)*sx;
@@ -58,11 +81,13 @@ function makeSectors(v){
 function loadImage(name){
 	document.getElementById("viewanchor").name=name;
 	window.location.hash=name;
+	setState("loading");
 	var url="maps/"+name+".json";
 	$.ajax({
 		url:url,
 		dataType:'text',
 		success:function(data){
+			addad();
 			try{
 				data=JSON.parse(data);
 			}catch(e){
@@ -70,12 +95,12 @@ function loadImage(name){
 				console.error(e);
 				return;
 			}
-			document.getElementById("targetname").text=data.name;
 			current=data;
 			img=new Image();
 			img.addEventListener("load",function(){
 				canvas.width=img.width;
 				canvas.height=img.height;
+				setState("loaded");
 				sx=canvas.width/canvas.offsetWidth;
 				sy=canvas.height/canvas.offsetHeight;
 				ctx.fillStyle=data.fill;
@@ -84,10 +109,18 @@ function loadImage(name){
 				reset();
 			});
 			img.src="maps/"+name+"."+(data.ext||"jpg");
+			document.getElementById("desc").innerHTML=data.desc||"";
 		},
 		error:function(error){
 			console.error(error)
 			alert("Error!:\n"+JSON.stringify(error));
 		}
 	})
+}
+
+function get(){
+	if(!current)return;
+	canvas.toBlob(function(blob){
+		saveAs(blob,current.finame+".jpg");
+	},"image/jpeg",.9);
 }

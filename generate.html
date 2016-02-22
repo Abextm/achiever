@@ -7,6 +7,8 @@
 		Name:<input type="text" id="name" onchange="update();" value="Name"/><br>
 		Fill:<input type="text" id="fill" onchange="update();" value="rgba(0,255,0,.4)"/><br>
 		Stroke:<input type="text" id="stroke"  onchange="update();" value="rgba(0,255,0,1)"/><br>
+        Description:<br>
+        <textarea id="desc"></textarea><br>
 		<table id="table">
 			<tr><th>X</th><th>Y</th><th>Width</th><th>Height</th><th>Rows</th><th>Cols</th></tr>
 		</table>
@@ -61,6 +63,7 @@
     		}).filter(function(v){
     			return v&&v[0]!==undefined;
     		});
+            current.desc=document.getElementById("desc").value;
     		document.getElementById("json").value=JSON.stringify(current);
     		makeSectors(true);
     		reset();

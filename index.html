@@ -39,18 +39,35 @@
 			  <script src="list.js"></script>
 			  <script src="populate.js"></script>
 			  <a name="view" id="viewanchor"></a><br>
+			  <h3 id="loading">
+			  	Loading.<br>
+			  	Please wait!
+			  </h3>
 			  <div id="target">
-			    <h2 id="targetname"></h2>
 			    <canvas id="canvas"></canvas>
+			    <div id="desc"></div>
+			    <button onclick="get();" class="btn btn-primary" id="dlbutton"><span class="glyphicon glyphicon-download-alt"></span> Download image!</button>
+			    <script src="FileSaver.min.js"></script>
+			    <script src="canvas-toBlob.js"></script>
 			    <script src="canvas.js"></script>
-			    Right click > Save image as to save a copy!
-			  </div>
-			 </div>
+			  </div><br>
+			  <div class="youknowwho">
+			  	<script async defer id="adscript"></script>
+					<ins class="adsbygoogle"
+					     style="display:block"
+					     data-ad-client="ca-pub-9244973857607987"
+					     data-ad-slot="6040464751"
+					     data-ad-format="auto"></ins>
+					<script>
+					(adsbygoogle = window.adsbygoogle || []).push({});
+					</script>
+				</div>
+			</div>
     </div>
     <footer class="footer">
       <div class="container">
         <p class="text-muted"><a name="about"></a>
-    			Achiever is a simple tool to fill in achievement images. Add a new one by contributing on github!</p>
+    			Images copyright their respective owners. Software copyright Abex 2015.
       </div>
     </footer>
     <script>
