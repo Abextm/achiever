@@ -1,6 +1,9 @@
-var current, img, sx,sy,sectors;
+var current, img,bg, sx,sy,sectors;
 var canvas=document.getElementById("canvas");
 var ctx=canvas.getContext("2d");
+ctx.imageSmoothingEnabled=true;
+ctx.imageSmoothingQuality="high";
+
 
 if (!Array.prototype.findIndex) {
   Array.prototype.findIndex = function(predicate) {
@@ -39,19 +42,29 @@ canvas.addEventListener("click",function(e){
 });
 
 function reset(fill){
-	if(fill){
+	if(bg){
+		ctx.drawImage(bg,0,-1)
+	}else if(fill){
 		var t = ctx.fillStyle;
-		ctx.fillStyle="#FFF";
+		ctx.fillStyle=current.backgroud||"#FFF";
 		ctx.fillRect(0,0,canvas.width,canvas.height);
 		ctx.fillStyle=t;
 	}else{
 		ctx.clearRect(0,0,canvas.width,canvas.height);
 	}
+	if(current.opacity){
+		ctx.globalAlpha=current.opacity
+	}
 	ctx.drawImage(img,0,-1);
+	ctx.globalAlpha=1
 	sectors.forEach(function(v){
 		if(v.v){
-			ctx.fillRect(v.x,v.y,v.x2-v.x,v.y2-v.y);
-			ctx.strokeRect(v.x,v.y,v.x2-v.x,v.y2-v.y);
+			if(current.opacity){
+				ctx.drawImage(img,v.x,v.y+1,v.x2-v.x,v.y2-v.y,v.x,v.y,v.x2-v.x,v.y2-v.y);
+			}else{
+				ctx.fillRect(v.x,v.y,v.x2-v.x,v.y2-v.y);
+				ctx.strokeRect(v.x,v.y,v.x2-v.x,v.y2-v.y);
+			}
 		}
 	})
 }
@@ -85,6 +98,12 @@ function makeSectors(v){
 	}));
 }
 
+function updateSX(){
+	sx=canvas.width/canvas.offsetWidth;
+	sy=canvas.height/canvas.offsetHeight;
+}
+window.onresize=updateSX;
+
 function loadImage(name){
 	document.getElementById("viewanchor").name=name;
 	window.location.hash=name;
@@ -103,19 +122,30 @@ function loadImage(name){
 				return;
 			}
 			current=data;
-			img=new Image();
-			img.addEventListener("load",function(){
+			var images=["maps/"+name+"."+(data.ext||"jpg")];
+			if(data.background===true){
+				images[images.length]=["maps/"+name+".background."+(data.ext||"jpg")];
+			}
+			Promise.all(images.map(function(v){
+				return new Promise(function(ok){
+					var i=new Image();
+					i.addEventListener("load",function(){
+						ok(i);
+					});
+					i.src=v;
+				});
+			})).then(function(is){
+				img=is[0];
+				bg=is[1];
 				canvas.width=img.width;
 				canvas.height=img.height;
 				setState("loaded");
-				sx=canvas.width/canvas.offsetWidth;
-				sy=canvas.height/canvas.offsetHeight;
+				updateSX();
 				ctx.fillStyle=data.fill;
 				ctx.strokeStyle=data.stroke;
 				makeSectors();
 				reset();
 			});
-			img.src="maps/"+name+"."+(data.ext||"jpg");
 			document.getElementById("desc").innerHTML=data.desc||"";
 		},
 		error:function(error){
